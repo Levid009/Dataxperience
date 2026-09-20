@@ -10,6 +10,15 @@ Sistema integral de auditoría de datos, detección de anomalías y modelado pre
 
 ---
 
+## 📺 Demostración en Video del Proyecto
+
+| 🎬 **Etapa 1: Ingesta, Calidad y Limpieza de Datos** | 🎬 **Etapa 2: Análisis Estadístico y Detección de Anomalías** |
+| :---: | :---: |
+| [![Video Demostración Etapa 1](https://img.youtube.com/vi/0IS5f_Mr-ik/maxresdefault.jpg)](https://youtu.be/0IS5f_Mr-ik) | [![Video Demostración Etapa 2](https://img.youtube.com/vi/EQvxJx8ZS-g/maxresdefault.jpg)](https://www.youtube.com/watch?v=EQvxJx8ZS-g) |
+| [▶️ Ver Video Explicativo - Etapa 1](https://youtu.be/0IS5f_Mr-ik) | [▶️ Ver Video Explicativo - Etapa 2](https://www.youtube.com/watch?v=EQvxJx8ZS-g) |
+
+---
+
 ## 🏛️ Contexto y Ciclo de Vida Analítico
 
 La contratación pública de obras de infraestructura representa una de las mayores asignaciones del erario público en Colombia. Este proyecto implementa un ciclo de vida analítico riguroso estructurado en tres etapas complementarias:
