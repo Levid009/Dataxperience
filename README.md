@@ -23,33 +23,9 @@ Plataforma integral de **Data Engineering, Auditoría Estadística y Machine Lea
 
 El sistema implementa un flujo de trabajo analítico integral estructurado en tres pilares complementarios:
 
-```text
-                  ┌────────────────────────────────────────┐
-                  │    Extracción SODA API (datos.gov.co)  │
-                  └──────────────────┬─────────────────────┘
-                                     ▼
-        ┌─────────────────────────────────────────────────────────┐
-        │  1. DATA ENGINEERING & SANEAMIENTO TRANSACCIONAL        │
-        │     • Limpieza de divisas, normalización de fechas      │
-        │     • Validación de consistencia financiera y nulos     │
-        │     • Deduplicación y feature engineering inicial       │
-        └────────────────────────────┬────────────────────────────┘
-                                     ▼
-        ┌─────────────────────────────────────────────────────────┐
-        │  2. AUDITORÍA ESTADÍSTICA & DETECCIÓN DE OUTLIERS       │
-        │     • Diagnóstico de asimetría extrema (Skewness > 10)  │
-        │     • Dispersión por modalidades de contratación        │
-        │     • Detección de atípicos con regla de Tukey (IQR)    │
-        └────────────────────────────┬────────────────────────────┘
-                                     ▼
-        ┌─────────────────────────────────────────────────────────┐
-        │  3. MACHINE LEARNING PREDICTIVO & STORYTELLING          │
-        │     • Estabilización de varianza con np.log1p           │
-        │     • Pipeline con ColumnTransformer (Scaler + OHE)     │
-        │     • Modelo Ridge (R² = 0.9989, MAPE = 5.09%)          │
-        │     • Dashboard ejecutivo y figuras a 300 DPI           │
-        └─────────────────────────────────────────────────────────┘
-```
+* **Data Engineering & Saneamiento Transaccional:** Ingesta automatizada vía API Socrata (datos.gov.co), tipado monetario, validación de reglas de negocio, deduplicación y feature engineering de sobrecostos y plazos.
+* **Auditoría Estadística & Detección de Anomalías:** Diagnóstico de asimetría (media vs. mediana), dispersión segmentada por modalidad contractual y detección de valores atípicos con la regla de Tukey IQR.
+* **Machine Learning Predictivo & Storytelling:** Estabilización de varianza (`np.log1p`), preprocesamiento con `ColumnTransformer`, estimación de adjudicaciones con modelo regularizado Ridge y generación de dashboards ejecutivos a 300 DPI.
 
 ---
 
