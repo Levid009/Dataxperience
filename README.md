@@ -1,12 +1,12 @@
-# Auditoría Predictiva de Contratación Pública en Obras de Infraestructura (Cundinamarca)
+# Auditoría Predictiva y Gobernanza de Contratación Pública (SECOP II)
 
 [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
 [![Pandas](https://img.shields.io/badge/Pandas-2.2-orange.svg)](https://pandas.pydata.org/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.9-green.svg)](https://scikit-learn.org/)
 [![Tests](https://img.shields.io/badge/Tests-21%20Passed-brightgreen.svg)](https://pytest.org/)
-[![Status](https://img.shields.io/badge/Status-Etapas%201%2C%202%20y%203%20Completadas-success.svg)](#)
+[![Status](https://img.shields.io/badge/Status-Soluci%C3%B3n%20Integral%20Completada-success.svg)](#)
 
-Sistema integral de auditoría de datos, detección de anomalías y modelado predictivo de adjudicaciones y desvíos presupuestales en contratos de obra pública del departamento de Cundinamarca, utilizando datos oficiales de la plataforma **SECOP II** (*Portal de Datos Abiertos de Colombia - datos.gov.co*).
+Plataforma integral de **Data Engineering, Auditoría Estadística y Machine Learning** diseñada para fiscalizar, analizar y predecir adjudicaciones en contratos de obra pública del departamento de Cundinamarca a partir de datos oficiales de **SECOP II** (*datos.gov.co*).
 
 ---
 
@@ -19,16 +19,37 @@ Sistema integral de auditoría de datos, detección de anomalías y modelado pre
 
 ---
 
-## 🏛️ Contexto y Ciclo de Vida Analítico
+## 🏛️ Visión General y Arquitectura
 
-La contratación pública de obras de infraestructura representa una de las mayores asignaciones del erario público en Colombia. Este proyecto implementa un ciclo de vida analítico riguroso estructurado en tres etapas complementarias:
+El sistema implementa un flujo de trabajo analítico integral estructurado en tres pilares complementarios:
 
-1. **Etapa 1: Ingesta, Auditoría de Calidad y Limpieza de Datos (Data Engineering)**  
-   Extracción automatizada vía API Socrata (SODA v2), saneamiento de valores monetarios, normalización de fechas a ISO 8601, descarte de inconsistencias operativas (`precio_base <= 0`), deduplicación por ID de proceso y feature engineering inicial de sobrecosto y duración estandarizada.
-2. **Etapa 2: Análisis Estadístico Descriptivo y Detección de Anomalías (Data Science)**  
-   Análisis de asimetría (Media vs. Mediana), dispersión segmentada por modalidad contractual, detección de valores atípicos (criterio Tukey IQR) y contraste de hipótesis econométricas sobre la concurrencia de oferentes.
-3. **Etapa 3: Modelado Predictivo, Visualización y Storytelling (Machine Learning)**  
-   Pipeline de regresión lineal regularizada (`Ridge`) con estabilización de varianza (`log1p`), preprocesamiento con `ColumnTransformer` (`StandardScaler` + `OneHotEncoder`), evaluación dual en pesos colombianos ($R^2 = 0.9989$, $\text{MAPE} = 5.09\%$), persistencia del modelo en `models/` y generación de figuras de storytelling a 300 DPI en `reports/figures/`.
+```text
+                  ┌────────────────────────────────────────┐
+                  │    Extracción SODA API (datos.gov.co)  │
+                  └──────────────────┬─────────────────────┘
+                                     ▼
+        ┌─────────────────────────────────────────────────────────┐
+        │  1. DATA ENGINEERING & SANEAMIENTO TRANSACCIONAL        │
+        │     • Limpieza de divisas, normalización de fechas      │
+        │     • Validación de consistencia financiera y nulos     │
+        │     • Deduplicación y feature engineering inicial       │
+        └────────────────────────────┬────────────────────────────┘
+                                     ▼
+        ┌─────────────────────────────────────────────────────────┐
+        │  2. AUDITORÍA ESTADÍSTICA & DETECCIÓN DE OUTLIERS       │
+        │     • Diagnóstico de asimetría extrema (Skewness > 10)  │
+        │     • Dispersión por modalidades de contratación        │
+        │     • Detección de atípicos con regla de Tukey (IQR)    │
+        └────────────────────────────┬────────────────────────────┘
+                                     ▼
+        ┌─────────────────────────────────────────────────────────┐
+        │  3. MACHINE LEARNING PREDICTIVO & STORYTELLING          │
+        │     • Estabilización de varianza con np.log1p           │
+        │     • Pipeline con ColumnTransformer (Scaler + OHE)     │
+        │     • Modelo Ridge (R² = 0.9989, MAPE = 5.09%)          │
+        │     • Dashboard ejecutivo y figuras a 300 DPI           │
+        └─────────────────────────────────────────────────────────┘
+```
 
 ---
 
@@ -46,9 +67,9 @@ Dataxperience/
 │   └── processed/                  # Dataset saneado y procesado
 │       └── secop_cundinamarca_obras_clean.csv
 ├── models/
-│   └── modelo_regresion_contratos.joblib # Pipeline entrenado y serializado
+│   └── modelo_regresion_contratos.joblib # Modelo predictivo serializado
 ├── reports/
-│   └── figures/                    # Figuras analíticas en alta resolución (300 DPI)
+│   └── figures/                    # Figuras analíticas y de storytelling (300 DPI)
 │       ├── fig1_distribucion_montos.png
 │       ├── fig2_boxplot_modalidades.png
 │       ├── fig3_dispersion_oferentes.png
@@ -57,24 +78,24 @@ Dataxperience/
 │       └── fig6_resumen_ejecutivo_storytelling.png
 ├── src/
 │   ├── __init__.py
-│   ├── cleaning.py                 # Saneamiento, casteo y deduplicación
-│   ├── features.py                 # Cálculo de sobrecostos y duración temporal
-│   ├── statistics.py               # Métricas de tendencia central, dispersión y Tukey IQR
-│   ├── visualization.py            # Gráficos estadísticos del EDA
-│   ├── models.py                   # Pipeline de modelado predictivo y evaluación
-│   ├── storytelling_viz.py         # Visualizaciones ejecutivas y storytelling a 300 DPI
+│   ├── cleaning.py                 # Saneamiento y validación transaccional
+│   ├── features.py                 # Feature engineering (sobrecostos, plazos)
+│   ├── statistics.py               # Medidas estadísticas descriptivas y Tukey IQR
+│   ├── visualization.py            # Visualizaciones analíticas del EDA
+│   ├── models.py                   # Pipeline supervisado scikit-learn y métricas
+│   ├── storytelling_viz.py         # Dashboards y visualizaciones de storytelling
 │   ├── pipeline_etapa_1.py         # Orquestador: Ingesta y Limpieza
-│   ├── pipeline_etapa_2.py         # Orquestador: EDA y Estadísticas
+│   ├── pipeline_etapa_2.py         # Orquestador: Análisis Estadístico y Outliers
 │   └── pipeline_etapa_3.py         # Orquestador: Modelado Predictivo y Storytelling
 └── tests/
-    ├── test_etapa_1.py             # Pruebas unitarias de limpieza y features
+    ├── test_etapa_1.py             # Pruebas unitarias de ingeniería de datos
     ├── test_etapa_2.py             # Pruebas unitarias de análisis estadístico
     └── test_etapa_3.py             # Pruebas unitarias de modelado y persistencia
 ```
 
 ---
 
-## ⚙️ Instalación y Requisitos
+## ⚙️ Instalación y Configuración
 
 Se recomienda utilizar un entorno con **Python 3.10+**:
 
@@ -91,41 +112,39 @@ pip install -r requirements.txt
 
 ## 🚀 Guía de Ejecución
 
-### 1. Ingesta y Depuración de Datos (Etapa 1)
-```bash
-python conexion-secop.py            # Descarga desde SECOP II (SODA API)
-python src/pipeline_etapa_1.py       # Saneamiento y generación de features
-```
+### Ejecución Modular por Etapas
 
-### 2. Análisis Estadístico y Detección de Anomalías (Etapa 2)
-```bash
-python src/pipeline_etapa_2.py       # Estadísticas descriptivas, outliers y EDA
-```
+1. **Ingesta y Limpieza de Datos (Data Engineering):**
+   ```bash
+   python conexion-secop.py            # Descarga de datos abiertos vía API
+   python src/pipeline_etapa_1.py       # Saneamiento y validaciones de negocio
+   ```
 
-### 3. Modelado Predictivo y Storytelling (Etapa 3)
-```bash
-python src/pipeline_etapa_3.py       # Entrenamiento Ridge, evaluación y visualizaciones
-```
+2. **Auditoría Estadística y Análisis Exploratorio (EDA):**
+   ```bash
+   python src/pipeline_etapa_2.py       # Tendencia central, dispersión y outliers
+   ```
 
-### 4. Ejecutar Suite de Pruebas Automatizadas
+3. **Modelado Predictivo y Storytelling (Machine Learning):**
+   ```bash
+   python src/pipeline_etapa_3.py       # Entrenamiento, métricas y dashboard final
+   ```
+
+### Validación Automatizada (Tests)
+Ejecuta la suite integral de 21 pruebas unitarias:
 ```bash
-python -m pytest tests/ -v          # 21 pruebas unitarias integradas
+python -m pytest tests/ -v
 ```
 
 ---
 
-## 📊 Síntesis de Resultados y Métricas Clave
+## 📊 Hallazgos y Resultados Consolidados
 
-### Auditoría y Calidad del Dato (Etapa 1)
-* **2,070 contratos depurados** retenidos de 2,438 registros crudos (tasa de retención del **84.91%**).
-* Identificación y tipificación de contratos con desvíos y plazos estandarizados en días.
-
-### Hallazgos Estadísticos y Outliers (Etapa 2)
-* Fuerte asimetría positiva en los montos adjudicados (*skewness > 10*), donde la media distorsiona significativamente el contrato típico respecto a la mediana.
-* Detección de anomalías y megaproyectos atípicos mediante el criterio Tukey IQR ($1.5 \times \text{IQR}$).
-
-### Desempeño del Modelo Predictivo (Etapa 3)
-* **$R^2$ Score (Escala Real COP):** **0.9989** (explica el 99.89% de la varianza en adjudicaciones).
-* **MAPE (Error Porcentual Absoluto Medio):** **5.09%**.
-* **Efecto de la Competencia:** Coeficiente negativo de concurrencia de oferentes ($-0.0192$), evidenciando empíricamente que mayor participación de proponentes genera ahorros presupuestales para el Estado.
-* **Modelo Operativo:** Serializado en `models/modelo_regresion_contratos.joblib` como herramienta de semáforo preventivo.
+| Dimensión | Hallazgo Clave | Impacto en Auditoría |
+| :--- | :--- | :--- |
+| **Calidad del Dato** | Retención del **84.91%** de registros válidos (2,070 de 2,438). | Se eliminan duplicados y registros inconsistentes sin pérdida de información representativa. |
+| **Distribución de Fondos** | Asimetría extrema (*skewness > 10*). Mediana: \$243.8M vs Media: \$1,385M COP. | La mediana representa el contrato típico; la media está distorsionada por megaproyectos. |
+| **Detección de Atípicos** | Identificación sistemática de contratos anómalos mediante Tukey IQR ($1.5 \times \text{IQR}$). | Permite focalizar auditorías en contratos con desvíos presupuestales desproporcionados. |
+| **Capacidad Predictiva** | Modelo regularizado con **$R^2 = 0.9989$** y **$\text{MAPE} = 5.09\%$**. | Capacidad de estimar con alta precisión el valor de mercado esperado para nuevos contratos. |
+| **Efecto Competencia** | Coeficiente de concurrencia negativo (**-0.0192**). | Evidencia empírica de que una mayor cantidad de oferentes reduce el monto final adjudicado (ahorro público). |
+| **Herramienta Operativa** | Modelo exportado en `models/modelo_regresion_contratos.joblib`. | Listo para integrarse como semáforo de alerta temprana en sistemas de contratación pública. |
