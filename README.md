@@ -112,15 +112,4 @@ Ejecuta la suite integral de 21 pruebas unitarias:
 python -m pytest tests/ -v
 ```
 
----
 
-## 📊 Hallazgos y Resultados Consolidados
-
-| Dimensión | Hallazgo Clave | Impacto en Auditoría |
-| :--- | :--- | :--- |
-| **Calidad del Dato** | Retención del **84.91%** de registros válidos (2,070 de 2,438). | Se eliminan duplicados y registros inconsistentes sin pérdida de información representativa. |
-| **Distribución de Fondos** | Asimetría extrema (*skewness > 10*). Mediana: \$243.8M vs Media: \$1,385M COP. | La mediana representa el contrato típico; la media está distorsionada por megaproyectos. |
-| **Detección de Atípicos** | Identificación sistemática de contratos anómalos mediante Tukey IQR ($1.5 \times \text{IQR}$). | Permite focalizar auditorías en contratos con desvíos presupuestales desproporcionados. |
-| **Capacidad Predictiva** | Modelo regularizado con **$R^2 = 0.9989$** y **$\text{MAPE} = 5.09\%$**. | Capacidad de estimar con alta precisión el valor de mercado esperado para nuevos contratos. |
-| **Efecto Competencia** | Coeficiente de concurrencia negativo (**-0.0192**). | Evidencia empírica de que una mayor cantidad de oferentes reduce el monto final adjudicado (ahorro público). |
-| **Herramienta Operativa** | Modelo exportado en `models/modelo_regresion_contratos.joblib`. | Listo para integrarse como semáforo de alerta temprana en sistemas de contratación pública. |
