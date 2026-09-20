@@ -104,9 +104,4 @@ python -m pytest tests/test_etapa_1.py -v
 * **`tiene_sobrecosto`**: Flag binario (1 si $Sobrecosto\_Pesos > 0$, 0 en caso contrario).
 * **`duracion_dias_prevista`**: Estandarización de plazos temporales a días (convirtiendo meses a días $\times 30$ y días directos).
 
----
 
-## 📌 Próximos Pasos
-
-* **Etapa 2:** Análisis exploratorio formal, estadísticas descriptivas, visualizaciones y detección de anomalías bajo la normativa de contratación pública.
-* **Etapa 3:** Entrenamiento y validación del modelo predictivo de riesgo de adición.
