@@ -1,0 +1,81 @@
+Prompt 1 (Etapa 1 - Ingesta y Limpieza de Datos)
+
+Actúa como un Senior Data Engineer. Necesito un script modular o notebook en Python para la "Etapa 1: Ingesta y Limpieza de Datos" del proyecto de auditoría de obras públicas en Cundinamarca usando SECOP II.
+
+Requerimientos técnicos:
+1. Conexión/Extracción:
+   - Utiliza la API pública de Socrata (datos.gov.co, endpoint del dataset de SECOP II: 'jbjy-vk9h' o similar de contratos) mediante requests o sodapy, O define una función para cargar un archivo CSV local con chunking.
+   - Aplica filtros directos en la consulta (o pos-carga): 
+     * Departamento = 'Cundinamarca'
+     * Tipo de Proceso / Objeto = filtrar contratos relacionados con 'Obra', 'Construcción' o 'Infraestructura'.
+     * Estado del Contrato = descartar cancelados o desiertos.
+
+2. Auditoría de Calidad y Transformaciones:
+   - Casteo de datos: Limpia strings de dinero (eliminar '$', comas, espacios) y convierte a float numérico: 'valor_del_contrato', 'valor_total_con_adiciones', 'valor_amortizado' (según nombres de columnas oficiales).
+   - Manejo de fechas: Convierte columnas de fecha a datetime (formato ISO 8601).
+   - Manejo de nulos y duplicados: Elimina duplicados por ID de proceso/contrato e imputa o documenta valores nulos en columnas críticas.
+
+3. Feature Engineering Inicial:
+   - Crea la columna 'sobrecosto_pesos' = valor_total_con_adiciones - valor_del_contrato.
+   - Crea la columna 'ratio_sobrecosto' = sobrecosto_pesos / valor_del_contrato.
+   - Crea la variable objetivo binaria 'tiene_sobrecosto' = 1 si sobrecosto_pesos > 0 else 0.
+   - Si existen fechas de inicio y fin, calcula 'duracion_dias_prevista'.
+
+4. Salida:
+   - Exporta el DataFrame depurado a 'data/processed/secop_cundinamarca_obras_clean.csv'.
+   - Imprime un resumen de calidad: conteo de filas antes/después, porcentaje de contratos con adición presupuestal y tabla resumen de tipos de datos.
+
+Escribe el código siguiendo PEP8, con docstrings claros y manejo robusto de excepciones.
+
+
+Prompt 2 (Etapa 2 - Análisis Estadístico Descriptivo y Detección de Anomalías)
+
+Actúa como un Lead Data Scientist especializado en estadística descriptiva y auditoría financiera. Genera un notebook o script en Python para la "Etapa 2: Análisis Estadístico" sobre el dataset limpio 'data/processed/secop_cundinamarca_obras_clean.csv'.
+
+Requerimientos del análisis:
+1. Medidas de Tendencia Central y Asimetría:
+   - Calcula media, mediana y moda para las variables: 'valor_del_contrato', 'sobrecosto_pesos' y 'ratio_sobrecosto'.
+   - Compara explícitamente Media vs. Mediana para mostrar la asimetría (skewness) y explica en un print por qué la mediana representa mejor el contrato típico en el sector público.
+
+2. Medidas de Dispersión y Variabilidad:
+   - Calcula Desviación Estándar, Varianza, Rango y Rango Intercuartílico (IQR).
+   - Segmenta la dispersión por 'Modalidad de Contratación' (ej. Licitación Pública vs. Contratación Directa / Selección Abreviada).
+
+3. Identificación de Outliers y Casos Críticos:
+   - Aplica el criterio de Tukey: Outliers = Valor > Q3 + 1.5 * IQR.
+   - Identifica y lista los 10 contratos con mayor ratio de sobrecosto.
+   - Verifica la restricción legal en Colombia: ¿Qué porcentaje de contratos supera el 50% de adición sobre el valor inicial?
+
+4. Visualizaciones Requeridas (Seaborn / Matplotlib):
+   - Gráfico 1: Histograma y KDE de 'ratio_sobrecosto' (con escala logarítmica si es necesario).
+   - Gráfico 2: Boxplot comparativo de 'ratio_sobrecosto' según 'Modalidad de Contratación'.
+   - Gráfico 3: Scatter plot de 'valor_del_contrato' vs 'sobrecosto_pesos'.
+
+Genera código limpio y tablas formateadas listas para proyectar en una presentación ejecutiva.
+
+
+Prompt 3 (Etapa 3 - Modelado Predictivo, Evaluación y Narrativa)
+
+Actúa como un Senior Machine Learning Engineer. Desarrolla el pipeline para la "Etapa 3: Modelado Predictivo y Storytelling" usando 'data/processed/secop_cundinamarca_obras_clean.csv'.
+
+Requerimientos del modelo:
+1. Planteamiento del Problema:
+   - Tarea: Predecir si un contrato de obra tendrá sobrecosto ('tiene_sobrecosto' = 1 o 0) antes de ser ejecutado.
+   - Variables explicativas (Features): 'valor_del_contrato', 'modalidad_de_contratacion', 'tipo_de_proceso', 'duracion_dias_prevista', y entidad compradora o municipio (codificado adecuadamente).
+
+2. Pipeline de Preprocesamiento (scikit-learn):
+   - Train/Test Split estratificado (80/20).
+   - ColumnTransformer: StandardScaler para numéricas y OneHotEncoder (handle_unknown='ignore') para categóricas.
+   - Manejo de desbalance de clases (class_weight='balanced' en el modelo).
+
+3. Entrenamiento y Evaluación:
+   - Modelo: Regresión Logística (interpretable para auditoría y entes de control).
+   - Métricas obligatorias: Matriz de Confusión, Precisión, Recall, F1-Score y ROC-AUC.
+   - Extracción e interpretación de coeficientes: ¿Cuáles características aumentan más el riesgo de adición presupuestal?
+
+4. Visualizaciones de Alto Impacto:
+   - Curva ROC con su valor AUC.
+   - Gráfico de barras horizontales con la importancia de variables / coeficientes del modelo (Feature Importance).
+
+5. Storytelling / Conclusión Ejecutiva:
+   - Imprime un párrafo de conclusión que resuma el hallazgo clave para un tomador de decisiones (ej. cómo la modalidad y la cuantía inicial condicionan el riesgo de desvío presupuestal).
