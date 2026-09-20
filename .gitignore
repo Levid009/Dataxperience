@@ -25,3 +25,8 @@ htmlcov/
 # Sistema Operativo
 .DS_Store
 Thumbs.db
+
+# Documentos internos de contexto y prompts
+Plaintext
+markdown.md
+
